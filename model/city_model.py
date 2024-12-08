@@ -4,6 +4,7 @@ from mesa.time import SimultaneousActivation
 import random
 from agents.passenger import Passenger
 from agents.vehicule import Vehicle
+from mesa import Agent
 
 class CityModel(Model):
     def __init__(self, width, height, num_passengers, num_vehicles):
@@ -43,12 +44,42 @@ class CityModel(Model):
                 print(f"Vehicle {vehicle.unique_id} broke down at {vehicle.pos}")
 
     def step(self):
+        # Afficher que la méthode step est appelée
+        print("Step called")
+
+        # Afficher les positions des passagers
+        print("Positions of all passengers:")
+        count = 0
+        for agent in self.schedule.agents:
+            if isinstance(agent, Passenger):
+                print(f"Passenger {agent.unique_id} at {agent.current_location} moving towards {agent.destination}")
+                count += 1
+                if count >= 5:  # Limiter l'affichage à 5 passagers pour éviter trop d'informations
+                    break
+
+        # Vérification de la cohérence entre les agents et la grille
+        if isinstance(self.schedule.agents, dict):
+            agents = self.schedule.agents.values()
+        elif isinstance(self.schedule.agents, list):
+            agents = self.schedule.agents
+        else:
+            raise TypeError("Unexpected type for schedule.agents")
+
+        for agent in agents:
+            if agent not in self.grid.get_cell_list_contents(agent.pos):
+                print(f"Warning: Agent {agent.unique_id} is not synchronized between schedule and grid.")
+
+        # Introduire une perturbation de temps en temps
         if self.random.random() < 0.1:
             self.introduce_disturbance()
+
+        # Effectuer un pas dans le temps pour tous les agents
         self.schedule.step()
 
 
-from mesa import Agent
+
+
+
 
 class Roadblock(Agent):
     def __init__(self, unique_id, model, position):

@@ -12,10 +12,7 @@ class Roadblock(Agent):
         super().__init__(unique_id, model)
         self.position = position
 
-class Roadblock(Agent):
-    def __init__(self, unique_id, model, position):
-        super().__init__(unique_id, model)
-        self.position = position
+
 
 
 
