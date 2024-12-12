@@ -1,9 +1,6 @@
 from mesa import Agent
 from agents.passenger import Passenger
-
 import random
-
-from mesa import Agent
 
 class Vehicle(Agent):
     def __init__(self, unique_id, model, route, timetable):
@@ -22,13 +19,12 @@ class Vehicle(Agent):
             print(f"Vehicle {self.unique_id} is broken down at {self.pos}")
             return
 
+        # Determine the next stop in the timetable
         self.current_stop = self.timetable[self.time % len(self.timetable)]
         next_location = self.route[self.current_stop]
 
-        if self.model.grid.is_cell_empty(next_location):
-            self.model.grid.move_agent(self, next_location)
-            self.pos = next_location
-            print(f"Vehicle {self.unique_id} moved to {next_location}")
+        # Move toward the next stop cell by cell
+        self.move_toward(next_location)
 
         # Synchronize passenger positions with the vehicle
         for passenger in self.passengers:
@@ -38,6 +34,31 @@ class Vehicle(Agent):
 
         self.pick_up_passengers()
         self.time += 1
+
+    def move_toward(self, destination):
+        # Calculate the direction from the vehicle's current position to the destination
+        x_current, y_current = self.pos
+        x_dest, y_dest = destination
+
+        # Move step-by-step toward the destination
+        if x_current < x_dest:
+            x_current += 1
+        elif x_current > x_dest:
+            x_current -= 1
+
+        if y_current < y_dest:
+            y_current += 1
+        elif y_current > y_dest:
+            y_current -= 1
+
+        # Update the vehicle's position
+        new_pos = (x_current, y_current)
+
+        # If the new position is valid, move the vehicle
+        if self.model.grid.is_cell_empty(new_pos):
+            self.model.grid.move_agent(self, new_pos)
+            self.pos = new_pos
+            print(f"Vehicle {self.unique_id} moved to {self.pos}")
 
     def pick_up_passengers(self):
         neighbors = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=True)
@@ -52,8 +73,3 @@ class Vehicle(Agent):
             self.passengers.append(passenger)
             passenger.on_vehicle = True
             print(f"Passenger {passenger.unique_id} picked up by Vehicle {self.unique_id} at {self.pos}")
-
-
-
- 
-
