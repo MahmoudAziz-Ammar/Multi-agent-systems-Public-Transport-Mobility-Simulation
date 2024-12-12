@@ -7,11 +7,16 @@ from agents.vehicule import Vehicle
 from mesa import Agent
 
 class CityModel(Model):
-    def __init__(self, width, height, num_passengers, num_vehicles):
+    def __init__(self, width, height, num_passengers, num_vehicles,perturbation_button):
         super().__init__()
         self.grid = MultiGrid(width, height, torus=False)
         self.schedule = SimultaneousActivation(self)
         self.disturbances = []
+        self.perturbation_button = perturbation_button
+
+
+        if self.perturbation_button:
+            self.activate_perturbations()
 
         # Create Passengers
         for i in range(num_passengers):
@@ -29,7 +34,10 @@ class CityModel(Model):
             self.grid.place_agent(vehicle, route[0])
             self.schedule.add(vehicle)
 
-    def introduce_disturbance(self):
+    
+
+
+    def activate_perturbations(self):
         disturbance_type = random.choice(["roadblock", "breakdown"])
         if disturbance_type == "roadblock":
             x = random.randint(0, self.grid.width - 1)
@@ -43,6 +51,7 @@ class CityModel(Model):
                 vehicle.broken_down = True
                 print(f"Vehicle {vehicle.unique_id} broke down at {vehicle.pos}")
 
+    
     def step(self):
         # Afficher que la méthode step est appelée
         print("Step called")
@@ -71,12 +80,12 @@ class CityModel(Model):
 
         # Introduire une perturbation de temps en temps
         if self.random.random() < 0.1:
-            self.introduce_disturbance()
+            self.activate_perturbations()
 
         # Effectuer un pas dans le temps pour tous les agents
         self.schedule.step()
 
-
+  
 
 
 

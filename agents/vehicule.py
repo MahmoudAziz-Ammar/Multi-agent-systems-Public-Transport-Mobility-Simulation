@@ -10,7 +10,7 @@ class Vehicle(Agent):
         self.timetable = timetable
         self.current_stop = 0
         self.broken_down = False
-        # Make sure the vehicle is placed on the grid
+        self.time=0
         self.pos = route[0]  # Initial position
         self.model.grid.place_agent(self, self.pos)
 
@@ -18,11 +18,9 @@ class Vehicle(Agent):
         if self.broken_down:
             print(f"Vehicle {self.unique_id} is broken down at {self.pos}")
             return
+        
 
-        # Introduce a random perturbation (e.g., breakdown) at each step
-        self.introduce_perturbation()
-
-        self.current_stop = (self.current_stop + 1) % len(self.route)
+        self.current_stop = self.timetable[self.time % len(self.timetable)]
         next_location = self.route[self.current_stop]
 
         if self.model.grid.is_cell_empty(next_location):
@@ -31,6 +29,7 @@ class Vehicle(Agent):
 
         # Attempt to pick up passengers after moving
         self.pick_up_passengers()
+        self.time += 1
 
     def pick_up_passengers(self):
         # Get the neighboring cells (including the vehicle's current cell)
@@ -64,21 +63,5 @@ class Vehicle(Agent):
             else:
                 print(f"Warning: Passenger {passenger.unique_id} not in vehicle's current position.")
 
-    def introduce_perturbation(self):
-        # Randomly decide if a perturbation should occur
-        if random.random() < 0.1:  # 10% chance for a perturbation
-            perturbation_type = random.choice(['breakdown', 'delay', 'route_change'])
-
-            if perturbation_type == 'breakdown':
-                self.broken_down = True
-                print(f"Vehicle {self.unique_id} has broken down at {self.pos}.")
-
-            elif perturbation_type == 'delay':
-                delay_time = random.randint(1, 3)  # Random delay between 1 and 3 steps
-                print(f"Vehicle {self.unique_id} has been delayed by {delay_time} steps.")
-
-            elif perturbation_type == 'route_change':
-                new_route_index = random.randint(0, len(self.route) - 1)
-                self.route = self.route[new_route_index:] + self.route[:new_route_index]
-                print(f"Vehicle {self.unique_id} has changed its route. New route: {self.route}")
+ 
 

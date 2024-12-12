@@ -18,8 +18,9 @@ class Roadblock(Agent):
 
 
 def agent_portrayal(agent):
+    portrayal = {}
     if isinstance(agent, Passenger):
-        return {
+        portrayal = {
             "Shape": "circle",
             "Color": "blue",
             "Filled": "true",
@@ -28,7 +29,7 @@ def agent_portrayal(agent):
         }
     elif isinstance(agent, Vehicle):
         color = "red" if agent.broken_down else "transparent"  # Rouge si panne
-        return {
+        portrayal = {
             "Shape": "bus.png",  # Chemin vers l'image
             "Color": color,  # Change la couleur de fond
             "Filled": "true",
@@ -37,7 +38,7 @@ def agent_portrayal(agent):
             "Layer": 2,
         }
     elif isinstance(agent, Roadblock):
-        return {
+        portrayal = {
             "Shape": "rect",
             "Color": "black",
             "Filled": "true",
@@ -45,12 +46,22 @@ def agent_portrayal(agent):
             "h": 0.8,
             "Layer": 0,
         }
-    return {}
 
+    if "x" not in portrayal:  # If x isn't defined already
+        portrayal["x"] = agent.pos[0]  # Ensure the x position is correct
+    if "y" not in portrayal:  # If y isn't defined already
+        portrayal["y"] = agent.pos[1]  # Ensure the y position is correct
+
+    return portrayal
 
 
 
 grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
+
+# Ajouter un paramètre pour activer/désactiver les perturbations
+perturbation_button = UserSettableParameter("checkbox", "Activate Disturbances", False)
+
+
 
 server = ModularServer(
     CityModel,
@@ -61,6 +72,6 @@ server = ModularServer(
         "height": UserSettableParameter("slider", "Grid Height", 20, 10, 50, 1),
         "num_passengers": UserSettableParameter("slider", "Number of Passengers", 10, 1, 20, 1),
         "num_vehicles": UserSettableParameter("slider", "Number of Vehicles", 3, 1, 10, 1),
+        "perturbation_button": perturbation_button,  # L'option checkbox pour activer les perturbations
     },
 )
-
