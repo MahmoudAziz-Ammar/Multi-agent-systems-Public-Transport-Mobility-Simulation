@@ -9,30 +9,30 @@ from agents.vehicule import Vehicle
 def agent_portrayal(agent):
     portrayal = {}
     if isinstance(agent, Passenger):
-        # Determine the color based on whether the passenger has reached their destination
+        # Distinguish passengers, with an offset to avoid overlap visualization
         color = "orange" if agent.current_location == agent.destination else "blue"
         portrayal = {
             "Shape": "circle",
             "Color": color,
             "Filled": "true",
-            "r": 0.5,
-            "Layer": 1,
+            "r": 0.3,  # Smaller radius for passengers
+            "Layer": 2,
+            "x": agent.pos[0] + 0.1,  # Slight offset to visualize separation
+            "y": agent.pos[1] + 0.1,
         }
     elif isinstance(agent, Vehicle):
-        # The vehicle becomes red if it's broken down
+        # Vehicles occupy a rectangle shape
         color = "red" if agent.broken_down else "green"
         portrayal = {
             "Shape": "rect",
             "Color": color,
             "Filled": "true",
-            "w": 0.8,
+            "w": 0.8,  # Larger size for vehicles
             "h": 0.8,
-            "Layer": 2,
+            "Layer": 1,
+            "x": agent.pos[0],
+            "y": agent.pos[1],
         }
-    
-    portrayal["x"] = agent.pos[0]
-    portrayal["y"] = agent.pos[1]
-
     return portrayal
 
 
