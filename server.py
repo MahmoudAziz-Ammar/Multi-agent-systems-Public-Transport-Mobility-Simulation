@@ -10,7 +10,7 @@ def agent_portrayal(agent):
     portrayal = {}
     if isinstance(agent, Passenger):
         # Distinguish passengers, with an offset to avoid overlap visualization
-        color = "orange" if agent.current_location == agent.destination else "blue"
+        color = "orange" if agent.reached_destination==True else "blue"
         portrayal = {
             "Shape": "circle",
             "Color": color,

@@ -22,7 +22,7 @@ class CityModel(Model):
         for i in range(num_passengers):
             origin = (random.randint(0, width - 1), random.randint(0, height - 1))
             destination = (random.randint(0, width - 1), random.randint(0, height - 1))
-            passenger = Passenger(i, self, origin, destination)
+            passenger = Passenger(i, self, origin, destination,reached_destination=False)
             self.grid.place_agent(passenger, origin)
             self.schedule.add(passenger)
 
