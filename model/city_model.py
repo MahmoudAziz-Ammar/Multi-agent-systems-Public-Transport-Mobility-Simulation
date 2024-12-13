@@ -39,6 +39,7 @@ class CityModel(Model):
 
     def activate_perturbations(self):
         disturbance_type = random.choice(["roadblock", "breakdown"])
+        print("i think we have : "+disturbance_type)
         if disturbance_type == "roadblock":
             x = random.randint(0, self.grid.width - 1)
             y = random.randint(0, self.grid.height - 1)
