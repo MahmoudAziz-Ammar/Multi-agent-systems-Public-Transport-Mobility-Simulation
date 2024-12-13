@@ -51,4 +51,5 @@ class Passenger(Agent):
         if self.current_location == self.destination and self.on_vehicle:
             vehicle.passengers.remove(self)  # Remove from vehicle
             self.on_vehicle = False
+            self.reached_destination = True
             print(f"Passenger {self.unique_id} dropped off by Vehicle {vehicle.unique_id} at {self.current_location}")
