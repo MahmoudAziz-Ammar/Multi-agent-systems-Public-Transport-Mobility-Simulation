@@ -10,7 +10,7 @@ def agent_portrayal(agent):
     portrayal = {}
     if isinstance(agent, Passenger):
         # Distinguish passengers, with an offset to avoid overlap visualization
-        color = "orange" if agent.reached_destination else "blue"
+        color = "orange" if agent.reached_destination==True else "blue"
         portrayal = {
             "Shape": "circle",
             "Color": color,
@@ -32,18 +32,6 @@ def agent_portrayal(agent):
             "Layer": 1,
             "x": agent.pos[0],
             "y": agent.pos[1],
-        }
-    elif isinstance(agent, Roadblock):
-        # Roadblock colored black
-        portrayal = {
-            "Shape": "rect",
-            "Color": "black",  # Color black for roadblock
-            "Filled": "true",
-            "w": 1.0,  # Adjust size as needed
-            "h": 1.0,
-            "Layer": 3,  # Set a layer above the vehicles and passengers
-            "x": agent.position[0],
-            "y": agent.position[1],
         }
     return portrayal
 
